@@ -239,7 +239,12 @@ public final class CameraManager {
 
       int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
       int height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
-
+      // Forzo la forma quadrata trattandosi di qrcode con dimensioni minori
+      if (width>height) {
+        width=height;
+      }else {
+        height=width;
+      }
       int leftOffset = (screenResolution.x - width) / 2;
       int topOffset = (screenResolution.y - height) / 2;
       framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
