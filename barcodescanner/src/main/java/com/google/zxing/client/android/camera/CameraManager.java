@@ -43,10 +43,10 @@ public final class CameraManager {
 
   private static final String TAG = CameraManager.class.getSimpleName();
 
-  private static final int MIN_FRAME_WIDTH = 240;
-  private static final int MIN_FRAME_HEIGHT = 240;
-  private static final int MAX_FRAME_WIDTH = 1200; // = 5/8 * 1920
-  private static final int MAX_FRAME_HEIGHT = 675; // = 5/8 * 1080
+  private static final int MIN_FRAME_WIDTH = 200;
+  private static final int MIN_FRAME_HEIGHT = 200;
+  private static final int MAX_FRAME_WIDTH = 1200; // = 3/8 * 1920
+  private static final int MAX_FRAME_HEIGHT = 675; // = 3/8 * 1080
 
   private final Context context;
   private final CameraConfigurationManager configManager;
@@ -249,7 +249,7 @@ public final class CameraManager {
   }
   
   private static int findDesiredDimensionInRange(int resolution, int hardMin, int hardMax) {
-    int dim = 5 * resolution / 8; // Target 5/8 of each dimension
+    int dim = 3 * resolution / 8; // Target 3/8 of each dimension
     if (dim < hardMin) {
       return hardMin;
     }
