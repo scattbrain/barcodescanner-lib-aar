@@ -37,8 +37,10 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
   private static final long AUTO_FOCUS_INTERVAL_MS = 500L;
   private static final Collection<String> FOCUS_MODES_CALLING_AF;
   static {
-    FOCUS_MODES_CALLING_AF = new ArrayList<>(2);
+	  // Giorgio change focus mode
+    FOCUS_MODES_CALLING_AF = new ArrayList<>(3);
     FOCUS_MODES_CALLING_AF.add(Camera.Parameters.FOCUS_MODE_AUTO);
+    FOCUS_MODES_CALLING_AF.add(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
     FOCUS_MODES_CALLING_AF.add(Camera.Parameters.FOCUS_MODE_MACRO);
   }
 
