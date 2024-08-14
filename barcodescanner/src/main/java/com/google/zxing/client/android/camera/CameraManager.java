@@ -40,7 +40,7 @@ import java.io.IOException;
 public final class CameraManager {
 
   private static final String TAG = CameraManager.class.getSimpleName();
-
+  // Giorgio forced cropped ratio (original 240)
   private static final int MIN_FRAME_WIDTH = 200;
   private static final int MIN_FRAME_HEIGHT = 200;
   private static final int MAX_FRAME_WIDTH = 1200; // = 5/8 * 1920
@@ -223,6 +223,12 @@ public final class CameraManager {
 
       int width = findDesiredDimensionInRange(screenResolution.x, MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
       int height = findDesiredDimensionInRange(screenResolution.y, MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
+      // Giorgio Forzo la forma quadrata trattandosi di qrcode con dimensioni minori
+      if (width>height) {
+        width=height;
+      }else {
+        height=width;
+      }
 
       int leftOffset = (screenResolution.x - width) / 2;
       int topOffset = (screenResolution.y - height) / 2;
