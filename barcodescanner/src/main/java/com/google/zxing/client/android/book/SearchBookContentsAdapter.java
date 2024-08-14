@@ -24,7 +24,7 @@ import android.widget.ArrayAdapter;
 
 import java.util.List;
 
-import barcodescanner.xservices.nl.barcodescanner.R;
+import com.google.zxing.client.android.R;
 
 /**
  * Manufactures list items which represent SBC results.

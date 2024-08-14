@@ -30,8 +30,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
-import barcodescanner.xservices.nl.barcodescanner.R;
-
 /**
  * Implements support for barcode scanning preferences.
  *
@@ -90,7 +88,7 @@ public final class PreferencesFragment
     }
   }
 
-  private class CustomSearchURLValidator implements Preference.OnPreferenceChangeListener {
+  private final class CustomSearchURLValidator implements Preference.OnPreferenceChangeListener {
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
       if (!isValid(newValue)) {
