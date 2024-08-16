@@ -1,12 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "26.0.3"
-
+    namespace="barcodescanner.xservices.nl.barcodescanner"
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 32
+        compileSdk 34
+        minSdkVersion 21
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
