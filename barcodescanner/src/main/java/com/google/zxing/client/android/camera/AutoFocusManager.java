@@ -33,11 +33,11 @@ import com.google.zxing.client.android.PreferencesActivity;
 final class AutoFocusManager implements Camera.AutoFocusCallback {
 
   private static final String TAG = AutoFocusManager.class.getSimpleName();
-  // Giorgio reduce autofocus timeout
+  // Giorgio change timeout
   private static final long AUTO_FOCUS_INTERVAL_MS = 500L;
   private static final Collection<String> FOCUS_MODES_CALLING_AF;
   static {
-	  // Giorgio change focus mode
+	  // Giorgio change autofocus
     FOCUS_MODES_CALLING_AF = new ArrayList<>(3);
     FOCUS_MODES_CALLING_AF.add(Camera.Parameters.FOCUS_MODE_AUTO);
     FOCUS_MODES_CALLING_AF.add(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);

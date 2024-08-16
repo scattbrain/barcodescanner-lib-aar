@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 
+import barcodescanner.xservices.nl.barcodescanner.R;
+
 /**
  * An HTML-based help screen.
  *

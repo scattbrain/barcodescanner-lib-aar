@@ -25,7 +25,6 @@ import com.google.zxing.common.BitMatrix;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -629,10 +628,7 @@ public class FinderPatternFinder {
       }
     }
 
-    // A more up-to-date version would be "possibleCenters.sort(moduleComparator);"
-    // But we need this old syntax for android API 23 (Marshmallow) and below
-    // cf. https://github.com/zxing/zxing/issues/1358
-    Collections.sort(possibleCenters, moduleComparator);
+    possibleCenters.sort(moduleComparator);
 
     double distortion = Double.MAX_VALUE;
     FinderPattern[] bestPatterns = new FinderPattern[3];

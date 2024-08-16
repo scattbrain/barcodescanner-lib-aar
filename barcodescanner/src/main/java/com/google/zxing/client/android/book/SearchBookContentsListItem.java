@@ -16,7 +16,7 @@
 
 package com.google.zxing.client.android.book;
 
-import com.google.zxing.client.android.R;
+import barcodescanner.xservices.nl.barcodescanner.R;
 
 import android.content.Context;
 import android.graphics.Typeface;

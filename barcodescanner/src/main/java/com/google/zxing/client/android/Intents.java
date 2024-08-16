@@ -175,6 +175,41 @@ public final class Intents {
      */
     public static final String SAVE_HISTORY = "SAVE_HISTORY";
 
+    /**
+     * Set to true if we want to show the button to flip the camera (if available)
+     */
+    public static final String SHOW_FLIP_CAMERA_BUTTON = "SHOW_FLIP_CAMERA_BUTTON";
+
+    /**
+     * Set to true if we want to show the button to toggle the torch (if available)
+     */
+    public static final String SHOW_TORCH_BUTTON = "SHOW_TORCH_BUTTON";
+
+    /**
+     * Set to true if we want to show the launch with the torch toggled on
+     */
+    public static final String TORCH_ON = "TORCH_ON";
+
+    /**
+     * Set to false if you want to suppress the beep when a code is scanned
+     */
+    public static final String BEEP_ON_SCAN = "BEEP_ON_SCAN";
+
+    /**
+     * Set to true if you want to enable bulk scan mode
+     */
+    public static final String BULK_SCAN = "BULK_SCAN";
+
+    /**
+     * Lock to "landscape" or "portrait" to override the default sensor-driven scan
+     */
+    public static final String ORIENTATION_LOCK = "ORIENTATION_LOCK";
+
+    /**
+     * Set to true if you want to scan GS1 barcodes
+     */
+    public static final String ASSUME_GS1 = "ASSUME_GS1";
+
     private Scan() {
     }
   }

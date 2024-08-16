@@ -59,7 +59,6 @@ public final class RSSExpandedReader extends AbstractRSSReader {
   private static final int[] EVEN_TOTAL_SUBSET = {4, 20, 52, 104, 204};
   private static final int[] GSUM = {0, 348, 1388, 2948, 3988};
 
-  /** Finder pattern element widths, from section 7.2.7 of ISO/IEC 24724:2006. */
   private static final int[][] FINDER_PATTERNS = {
     {1,8,4,1}, // A
     {3,6,4,1}, // B
@@ -69,7 +68,6 @@ public final class RSSExpandedReader extends AbstractRSSReader {
     {2,2,9,1}  // F
   };
 
-  /** The element weights used in the checksum calculation, from section 7.2.6 of ISO/IEC 24724:2006. */
   private static final int[][] WEIGHTS = {
     {  1,   3,   9,  27,  81,  32,  96,  77},
     { 20,  60, 180, 118, 143,   7,  21,  63},
@@ -103,7 +101,6 @@ public final class RSSExpandedReader extends AbstractRSSReader {
   private static final int FINDER_PAT_E = 4;
   private static final int FINDER_PAT_F = 5;
 
-  /** The possible finder pattern sequences, from section 7.2.7 of ISO/IEC 24724:2006. */
   @SuppressWarnings("checkstyle:lineLength")
   private static final int[][] FINDER_PATTERN_SEQUENCES = {
     { FINDER_PAT_A, FINDER_PAT_A },
@@ -120,10 +117,6 @@ public final class RSSExpandedReader extends AbstractRSSReader {
 
   private static final int MAX_PAIRS = 11;
 
-  private static final float FINDER_PATTERN_MODULES = 15f;
-  private static final float DATA_CHARACTER_MODULES = 17f;
-  private static final float MAX_FINDER_PATTERN_DISTANCE_VARIANCE = 0.1f;
-
   private final List<ExpandedPair> pairs = new ArrayList<>(MAX_PAIRS);
   private final List<ExpandedRow> rows = new ArrayList<>();
   private final int [] startEnd = new int[2];
@@ -133,7 +126,9 @@ public final class RSSExpandedReader extends AbstractRSSReader {
   public Result decodeRow(int rowNumber,
                           BitArray row,
                           Map<DecodeHintType,?> hints) throws NotFoundException, FormatException {
-    // Rows can start with even pattern if previous rows had an odd number of patterns, so we try twice.
+    // Rows can start with even pattern in case in prev rows there where odd number of patters.
+    // So lets try twice
+    this.pairs.clear();
     this.startFromEven = false;
     try {
       return constructResult(decodeRow2pairs(rowNumber, row));
@@ -141,6 +136,7 @@ public final class RSSExpandedReader extends AbstractRSSReader {
       // OK
     }
 
+    this.pairs.clear();
     this.startFromEven = true;
     return constructResult(decodeRow2pairs(rowNumber, row));
   }
@@ -153,7 +149,6 @@ public final class RSSExpandedReader extends AbstractRSSReader {
 
   // Not private for testing
   List<ExpandedPair> decodeRow2pairs(int rowNumber, BitArray row) throws NotFoundException {
-    this.pairs.clear();
     boolean done = false;
     while (!done) {
       try {
@@ -167,7 +162,8 @@ public final class RSSExpandedReader extends AbstractRSSReader {
       }
     }
 
-    if (checkChecksum() && isValidSequence(this.pairs, true)) {
+    // TODO: verify sequence of finder patterns as in checkPairSequence()
+    if (checkChecksum()) {
       return this.pairs;
     }
 
@@ -228,7 +224,7 @@ public final class RSSExpandedReader extends AbstractRSSReader {
       }
       this.pairs.addAll(row.getPairs());
 
-      if (isValidSequence(this.pairs, false)) {
+      if (isValidSequence(this.pairs)) {
         if (checkChecksum()) {
           return this.pairs;
         }
@@ -247,12 +243,11 @@ public final class RSSExpandedReader extends AbstractRSSReader {
     throw NotFoundException.getNotFoundInstance();
   }
 
-  // Whether the pairs form a valid finder pattern sequence, either complete or a prefix
-  private static boolean isValidSequence(List<ExpandedPair> pairs, boolean complete) {
-
+  // Whether the pairs form a valid find pattern sequence,
+  // either complete or a prefix
+  private static boolean isValidSequence(List<ExpandedPair> pairs) {
     for (int[] sequence : FINDER_PATTERN_SEQUENCES) {
-      boolean sizeOk = (complete ? pairs.size() == sequence.length : pairs.size() <= sequence.length);
-      if (sizeOk) {
+      if (pairs.size() <= sequence.length) {
         boolean stop = true;
         for (int j = 0; j < pairs.size(); j++) {
           if (pairs.get(j).getFinderPattern().getValue() != sequence[j]) {
@@ -264,44 +259,9 @@ public final class RSSExpandedReader extends AbstractRSSReader {
           return true;
         }
       }
+
     }
 
-    return false;
-  }
-
-  // Whether the pairs, plus another pair of the specified type, would together
-  // form a valid finder pattern sequence, either complete or partial
-  private static boolean mayFollow(List<ExpandedPair> pairs, int value) {
-
-    if (pairs.isEmpty()) {
-      return true;
-    }
-
-    for (int[] sequence : FINDER_PATTERN_SEQUENCES) {
-      if (pairs.size() + 1 <= sequence.length) {
-        // the proposed sequence (i.e. pairs + value) would fit in this allowed sequence
-        for (int i = pairs.size(); i < sequence.length; i++) {
-          if (sequence[i] == value) {
-            // we found our value in this allowed sequence, check to see if the elements preceding it match our existing
-            // pairs; note our existing pairs may not be a full sequence (e.g. if processing a row in a stacked symbol)
-            boolean matched = true;
-            for (int j = 0; j < pairs.size(); j++) {
-              int allowed = sequence[i - j - 1];
-              int actual = pairs.get(pairs.size() - j - 1).getFinderPattern().getValue();
-              if (allowed != actual) {
-                matched = false;
-                break;
-              }
-            }
-            if (matched) {
-              return true;
-            }
-          }
-        }
-      }
-    }
-
-    // the proposed finder pattern sequence is illegal
     return false;
   }
 
@@ -458,27 +418,23 @@ public final class RSSExpandedReader extends AbstractRSSReader {
     }
 
     FinderPattern pattern;
-    DataCharacter leftChar = null;
 
     boolean keepFinding = true;
     int forcedOffset = -1;
     do {
       this.findNextPair(row, previousPairs, forcedOffset);
-      pattern = parseFoundFinderPattern(row, rowNumber, isOddPattern, previousPairs);
+      pattern = parseFoundFinderPattern(row, rowNumber, isOddPattern);
       if (pattern == null) {
-        forcedOffset = getNextSecondBar(row, this.startEnd[0]); // probable false positive, keep looking
+        forcedOffset = getNextSecondBar(row, this.startEnd[0]);
       } else {
-        try {
-          leftChar  = this.decodeDataCharacter(row, pattern, isOddPattern, true);
-          keepFinding = false;
-        } catch (NotFoundException ignored) {
-          forcedOffset = getNextSecondBar(row, this.startEnd[0]); // probable false positive, keep looking
-        }
+        keepFinding = false;
       }
     } while (keepFinding);
 
     // When stacked symbol is split over multiple rows, there's no way to guess if this pair can be last or not.
     // boolean mayBeLast = checkPairSequence(previousPairs, pattern);
+
+    DataCharacter leftChar  = this.decodeDataCharacter(row, pattern, isOddPattern, true);
 
     if (!previousPairs.isEmpty() && previousPairs.get(previousPairs.size() - 1).mustBeLast()) {
       throw NotFoundException.getNotFoundInstance();
@@ -572,10 +528,7 @@ public final class RSSExpandedReader extends AbstractRSSReader {
     }
   }
 
-  private FinderPattern parseFoundFinderPattern(BitArray row,
-                                                int rowNumber,
-                                                boolean oddPattern,
-                                                List<ExpandedPair> previousPairs) {
+  private FinderPattern parseFoundFinderPattern(BitArray row, int rowNumber, boolean oddPattern) {
     // Actually we found elements 2-5.
     int firstCounter;
     int start;
@@ -615,27 +568,6 @@ public final class RSSExpandedReader extends AbstractRSSReader {
     } catch (NotFoundException ignored) {
       return null;
     }
-
-    // Check that the pattern type that we *think* we found can exist as part of a valid sequence of finder patterns.
-    if (!mayFollow(previousPairs, value)) {
-      return null;
-    }
-
-    // Check that the finder pattern that we *think* we found is not too far from where we would expect to find it,
-    // given that finder patterns are 15 modules wide and the data characters between them are 17 modules wide.
-    if (!previousPairs.isEmpty()) {
-      ExpandedPair prev = previousPairs.get(previousPairs.size() - 1);
-      int prevStart = prev.getFinderPattern().getStartEnd()[0];
-      int prevEnd = prev.getFinderPattern().getStartEnd()[1];
-      int prevWidth = prevEnd - prevStart;
-      float charWidth = (prevWidth / FINDER_PATTERN_MODULES) * DATA_CHARACTER_MODULES;
-      float minX = prevEnd + (2 * charWidth * (1 - MAX_FINDER_PATTERN_DISTANCE_VARIANCE));
-      float maxX = prevEnd + (2 * charWidth * (1 + MAX_FINDER_PATTERN_DISTANCE_VARIANCE));
-      if (start < minX || start > maxX) {
-        return null;
-      }
-    }
-
     return new FinderPattern(value, new int[] {start, end}, start, end, rowNumber);
   }
 

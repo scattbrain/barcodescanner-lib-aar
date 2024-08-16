@@ -29,6 +29,8 @@ import android.util.Log;
 import java.io.Closeable;
 import java.io.IOException;
 
+import barcodescanner.xservices.nl.barcodescanner.R;
+
 /**
  * Manages beeps and vibrations for {@link CaptureActivity}.
  */

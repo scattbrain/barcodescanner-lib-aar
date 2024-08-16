@@ -21,7 +21,7 @@ import android.provider.ContactsContract;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.android.Contents;
 import com.google.zxing.client.android.Intents;
-import com.google.zxing.client.android.R;
+import barcodescanner.xservices.nl.barcodescanner.R;
 
 import android.app.Activity;
 import android.content.ContentResolver;

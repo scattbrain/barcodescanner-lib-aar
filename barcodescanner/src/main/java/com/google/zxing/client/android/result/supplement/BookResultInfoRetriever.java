@@ -24,7 +24,7 @@ import android.content.Context;
 import android.widget.TextView;
 import com.google.zxing.client.android.HttpHelper;
 import com.google.zxing.client.android.LocaleManager;
-import com.google.zxing.client.android.R;
+import barcodescanner.xservices.nl.barcodescanner.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

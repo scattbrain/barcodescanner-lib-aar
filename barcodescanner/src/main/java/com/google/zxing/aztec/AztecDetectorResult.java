@@ -31,27 +31,16 @@ public final class AztecDetectorResult extends DetectorResult {
   private final boolean compact;
   private final int nbDatablocks;
   private final int nbLayers;
-  private final int errorsCorrected;
 
   public AztecDetectorResult(BitMatrix bits,
                              ResultPoint[] points,
                              boolean compact,
                              int nbDatablocks,
                              int nbLayers) {
-    this(bits, points, compact, nbDatablocks, nbLayers, 0);
-  }
-
-  public AztecDetectorResult(BitMatrix bits,
-                             ResultPoint[] points,
-                             boolean compact,
-                             int nbDatablocks,
-                             int nbLayers,
-                             int errorsCorrected) {
     super(bits, points);
     this.compact = compact;
     this.nbDatablocks = nbDatablocks;
     this.nbLayers = nbLayers;
-    this.errorsCorrected = errorsCorrected;
   }
 
   public int getNbLayers() {
@@ -66,7 +55,4 @@ public final class AztecDetectorResult extends DetectorResult {
     return compact;
   }
 
-  public int getErrorsCorrected() {
-    return errorsCorrected;
-  }
 }

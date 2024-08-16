@@ -16,7 +16,7 @@
 
 package com.google.zxing.client.android.result;
 
-import com.google.zxing.client.android.R;
+import barcodescanner.xservices.nl.barcodescanner.R;
 import com.google.zxing.client.result.ParsedResult;
 import com.google.zxing.client.result.TelParsedResult;
 

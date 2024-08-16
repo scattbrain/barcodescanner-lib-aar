@@ -30,6 +30,8 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
+import barcodescanner.xservices.nl.barcodescanner.R;
+
 /**
  * Implements support for barcode scanning preferences.
  *

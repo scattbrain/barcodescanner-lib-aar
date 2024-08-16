@@ -146,20 +146,17 @@ public final class Decoder {
     int resultOffset = 0;
 
     // Error-correct and copy data blocks together into a stream of bytes
-    int errorsCorrected = 0;
     for (DataBlock dataBlock : dataBlocks) {
       byte[] codewordBytes = dataBlock.getCodewords();
       int numDataCodewords = dataBlock.getNumDataCodewords();
-      errorsCorrected += correctErrors(codewordBytes, numDataCodewords);
+      correctErrors(codewordBytes, numDataCodewords);
       for (int i = 0; i < numDataCodewords; i++) {
         resultBytes[resultOffset++] = codewordBytes[i];
       }
     }
 
     // Decode the contents of that stream of bytes
-    DecoderResult result = DecodedBitStreamParser.decode(resultBytes, version, ecLevel, hints);
-    result.setErrorsCorrected(errorsCorrected);
-    return result;
+    return DecodedBitStreamParser.decode(resultBytes, version, ecLevel, hints);
   }
 
   /**
@@ -168,19 +165,17 @@ public final class Decoder {
    *
    * @param codewordBytes data and error correction codewords
    * @param numDataCodewords number of codewords that are data bytes
-   * @return the number of errors corrected
    * @throws ChecksumException if error correction fails
    */
-  private int correctErrors(byte[] codewordBytes, int numDataCodewords) throws ChecksumException {
+  private void correctErrors(byte[] codewordBytes, int numDataCodewords) throws ChecksumException {
     int numCodewords = codewordBytes.length;
     // First read into an array of ints
     int[] codewordsInts = new int[numCodewords];
     for (int i = 0; i < numCodewords; i++) {
       codewordsInts[i] = codewordBytes[i] & 0xFF;
     }
-    int errorsCorrected = 0;
     try {
-      errorsCorrected = rsDecoder.decodeWithECCount(codewordsInts, codewordBytes.length - numDataCodewords);
+      rsDecoder.decode(codewordsInts, codewordBytes.length - numDataCodewords);
     } catch (ReedSolomonException ignored) {
       throw ChecksumException.getChecksumInstance();
     }
@@ -189,7 +184,6 @@ public final class Decoder {
     for (int i = 0; i < numDataCodewords; i++) {
       codewordBytes[i] = (byte) codewordsInts[i];
     }
-    return errorsCorrected;
   }
 
 }
