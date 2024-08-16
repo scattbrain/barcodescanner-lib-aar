@@ -22,7 +22,7 @@ import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.hardware.Camera;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+// import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.widget.Button;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
@@ -161,7 +161,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
         finish();
       }
     };
-    LocalBroadcastManager.getInstance(this).registerReceiver(stopReceiver, new android.content.IntentFilter("barcode-scanner-stop"));
+    // LocalBroadcastManager.getInstance(this).registerReceiver(stopReceiver, new android.content.IntentFilter("barcode-scanner-stop"));
   }
 
   @Override
@@ -364,7 +364,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
   @Override
   protected void onDestroy() {
     inactivityTimer.shutdown();
-    LocalBroadcastManager.getInstance(this).unregisterReceiver(stopReceiver);
+    // LocalBroadcastManager.getInstance(this).unregisterReceiver(stopReceiver);
     super.onDestroy();
   }
 
@@ -503,7 +503,7 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
           Intent intermediateResult = new Intent("bulk-barcode-result");
           intermediateResult.putExtra(Intents.Scan.RESULT, rawResult.toString());
           intermediateResult.putExtra(Intents.Scan.RESULT_FORMAT, rawResult.getBarcodeFormat().toString());
-          LocalBroadcastManager.getInstance(this).sendBroadcast(intermediateResult);
+          // LocalBroadcastManager.getInstance(this).sendBroadcast(intermediateResult);
 
           restartPreviewAfterDelay(BULK_MODE_SCAN_DELAY_MS);
         } else {
